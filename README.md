@@ -3,7 +3,10 @@ Fishing rods now pull people towards the attacker (1.8.x). Highly customizable w
 
 ## This plugin is protected under the Apache 2.0 License
 
-![randomimg]https://i.gyazo.com/9606c4e6b786509c15173ae3ddab0803.png
+<p align="center">
+ <img src="https://i.gyazo.com/9606c4e6b786509c15173ae3ddab0803.png">
+</p>
+
 ## Config:
 ```
 #Controls the speed a victim is pushed towards the attacker (MUST BE A DOUBLE)
