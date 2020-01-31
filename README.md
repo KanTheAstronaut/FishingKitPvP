@@ -1,7 +1,7 @@
 # FishingKitPvP
 Fishing rods now pull people towards the attacker (1.8.x). Highly customizable with many features.
 
-##This plugin is protected under the Apache 2.0 License
+## This plugin is protected under the Apache 2.0 License
 
 ## Config:
 ```
