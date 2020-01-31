@@ -4,7 +4,7 @@ Fishing rods now pull people towards the attacker (1.8.x). Highly customizable w
 ## This plugin is protected under the Apache 2.0 License
 
 <p align="center">
- <img src="https://i.gyazo.com/9606c4e6b786509c15173ae3ddab0803.png">
+ <img src="https://i.gyazo.com/5abb66187b6ea081c35d65c251d664d6.png">
 </p>
 
 ## Config:
