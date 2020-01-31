@@ -1,0 +1,9 @@
+name: FishingKitPvP
+main: co.kanepu.fishingkitpvp.main
+author: KanTheAstronaut
+version: 1.0
+commands:
+  fishingkitpvpreload:
+    usage: /fishingkitpvpreload
+    permission: fishingkitpvp.reload
+    aliases: [fishingreload, fishingkitpvp]
