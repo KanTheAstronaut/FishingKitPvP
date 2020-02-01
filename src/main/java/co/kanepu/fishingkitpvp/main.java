@@ -14,6 +14,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class main extends JavaPlugin implements Listener {
     private File ConfigFile;
     private FileConfiguration Config;
-    private final HashMap<UUID, Integer> cooldownp = new HashMap<>();
+    private final HashMap<UUID, Integer> cooldownp = new HashMap<UUID, Integer>();
 
     public void onEnable() {
         ConfigFile = new File(getDataFolder(), "config.yml");
@@ -41,6 +42,17 @@ public class main extends JavaPlugin implements Listener {
         }
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("Plugin made by KanTheAstronaut/Kanepu as requested by iEddie for monman11.com (if u r readin dis thomas plox gib me dev)");
+        BukkitRunnable r = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!cooldownp.isEmpty()) {
+                    for(HashMap.Entry<UUID, Integer> e : cooldownp.entrySet()) {
+                        cooldownp.replace(e.getKey(), e.getValue() - 1);
+                    }
+                }
+            }
+        };
+        r.runTaskTimerAsynchronously(this, 0, 20);
     }
 
     @Override
@@ -52,40 +64,39 @@ public class main extends JavaPlugin implements Listener {
     public void onFishingRod(PlayerFishEvent event) {
         if (event.getCaught() instanceof Player && event.getPlayer().getItemInHand().getType().equals(Material.FISHING_ROD)) {
             if (event.getPlayer().hasPermission("fishingkitpvp.use")) {
+                event.setCancelled(true);
                 return;
             }
             if (event.getCaught().hasPermission("fishingkitpvp.exempt")) {
                 event.getPlayer().sendMessage(ChatColor.RED + "You cannot use that on that player!");
+                event.setCancelled(true);
                 return;
             }
             if (event.getPlayer().getLocation().distance(event.getCaught().getLocation()) > Config.getInt("range")) {
                 event.getPlayer().sendMessage(ChatColor.RED + "That player is too far!");
+                event.setCancelled(true);
                 return;
             }
-            long timeLeft = System.currentTimeMillis() - cooldownp.getOrDefault(event.getPlayer().getUniqueId(), 0);
-            if (TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= Config.getInt("cooldown")) {
-                if (!event.getPlayer().hasPermission("fishingkitpvp.nocooldown")) {
-                    if ((int) System.currentTimeMillis() < 1) {
-                        cooldownp.remove(event.getPlayer().getUniqueId());
-                    } else {
-                        cooldownp.put(event.getPlayer().getUniqueId(), (int) System.currentTimeMillis());
-                    }
-                }
-                if (Config.getBoolean("victimmsg")) {
+            if (cooldownp.containsKey(event.getPlayer().getUniqueId()) && cooldownp.get(event.getPlayer().getUniqueId()) <= 0)
+                cooldownp.remove(event.getPlayer().getUniqueId());
+            else if (cooldownp.containsKey(event.getPlayer().getUniqueId()) && cooldownp.get(event.getPlayer().getUniqueId()) > 0) {
+                event.getPlayer().sendMessage(ChatColor.RED + "You need to wait " + cooldownp.get(event.getPlayer().getUniqueId()) + " seconds before using that again!");
+                event.setCancelled(true);
+            }
+            if (!cooldownp.containsKey(event.getPlayer().getUniqueId())) {
+                if (!event.getPlayer().hasPermission("fishingkitpvp.nocooldown"))
+                    cooldownp.put(event.getPlayer().getUniqueId(), Config.getInt("cooldown"));
+                if (Config.getBoolean("victimmsg"))
                     event.getCaught().sendMessage(ChatColor.translateAlternateColorCodes('&', Config.getString("victimmsgi")).replace("%player%", event.getPlayer().getName()));
-                }
-                if (Config.getBoolean("attackermsg")) {
+                if (Config.getBoolean("attackermsg"))
                     event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', Config.getString("attackermsgi")).replace("%player%", event.getCaught().getName()));
-                }
-                if (Config.getBoolean("drag")) {
+                if (Config.getBoolean("drag"))
                     event.getCaught().setVelocity(new Vector(event.getCaught().getLocation().getX() - event.getPlayer().getLocation().getX(), event.getCaught().getLocation().getY() - event.getPlayer().getLocation().getY(), event.getCaught().getLocation().getZ() - event.getPlayer().getLocation().getZ()).normalize().multiply(-Config.getDouble("speed")));
-                } else {
+                else {
                     Location l = event.getPlayer().getLocation();
                     l.setY(l.getY() + Config.getInt("height"));
                     event.getCaught().teleport(l);
                 }
-            } else {
-                event.getPlayer().sendMessage(ChatColor.RED + "You need to wait %time% before using that again!".replace("%time%", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(timeLeft) - Config.getInt("cooldown"))));
             }
         }
     }
