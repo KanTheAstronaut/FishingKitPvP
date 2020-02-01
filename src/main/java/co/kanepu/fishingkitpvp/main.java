@@ -62,7 +62,7 @@ public class main extends JavaPlugin implements Listener {
     @EventHandler
     public void onFishingRod(PlayerFishEvent event) {
         if (event.getCaught() instanceof Player && event.getPlayer().getItemInHand().getType().equals(Material.FISHING_ROD)) {
-            if (event.getPlayer().hasPermission("fishingkitpvp.use")) {
+            if (!event.getPlayer().hasPermission("fishingkitpvp.use")) {
                 event.setCancelled(true);
                 return;
             }
