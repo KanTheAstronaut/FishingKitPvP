@@ -20,12 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class main extends JavaPlugin implements Listener {
     private File ConfigFile;
     private FileConfiguration Config;
-    private final HashMap<UUID, Integer> cooldownp = new HashMap<UUID, Integer>();
+    private final HashMap<UUID, Integer> cooldownp = new HashMap<>();
 
     public void onEnable() {
         ConfigFile = new File(getDataFolder(), "config.yml");
