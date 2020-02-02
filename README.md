@@ -39,6 +39,7 @@ height: 2
 - fishingkitpvp.use - Players fishing other players without this permission will result in nothing happening
 - fishingkitpvp.exempt - Players with this permission can't be fished
 - fishingkitpvp.reload - Players with this permission can use the config reload command
+- fishingkitpvp.nocooldown - Players with this permission will have no cooldown
 
 ## Commands:
 - /fishingkitpvpreload - fishingkitpvp.reload - Reloads the config
